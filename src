@@ -11,6 +11,7 @@ try:
     IP = " ".join(GETIP)
     if IP in TEXT :
         pass
+    else:os._exit(1)
 except:os._exit(1)
 good = "  [ + ]"
 bad = "  [ - ]"
